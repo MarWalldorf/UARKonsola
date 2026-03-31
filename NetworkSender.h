@@ -11,7 +11,7 @@ class NetworkSender : public QObject
 public:
     explicit NetworkSender(QObject *parent = nullptr);
 
-    // Metoda do wysyłania konfiguracji
+    
     void sendConfiguration(const QString &host, quint16 port, const QJsonDocument &config);
 
 signals:
