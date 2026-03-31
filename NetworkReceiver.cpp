@@ -13,7 +13,7 @@ NetworkReceiver::~NetworkReceiver()
 
 bool NetworkReceiver::startListening(quint16 port)
 {
-    // Restartujemy serwer, jeśli już działał
+    
     if (server->isListening()) server->close();
 
     if (server->listen(QHostAddress::Any, port)) {
