@@ -9,7 +9,7 @@ NetworkSender::NetworkSender(QObject *parent) : QObject(parent)
 
 void NetworkSender::sendConfiguration(const QString &host, quint16 port, const QJsonDocument &config)
 {
-    // Kompresujemy JSON, aby zajął mniej miejsca w sieci
+
     dataToSend = config.toJson(QJsonDocument::Compact);
 
     if (socket->state() == QAbstractSocket::ConnectedState) {
@@ -22,7 +22,7 @@ void NetworkSender::onConnected()
 {
     socket->write(dataToSend);
     socket->waitForBytesWritten();
-    socket->disconnectFromHost(); // Rozłączamy po wysłaniu
+    socket->disconnectFromHost();
     emit dataSent();
 }
 
