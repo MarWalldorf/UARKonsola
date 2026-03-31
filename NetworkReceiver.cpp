@@ -35,13 +35,13 @@ void NetworkReceiver::onNewConnection()
 {
     QTcpSocket *clientConnection = server->nextPendingConnection();
 
-    // Czyścimy bufor przed nowym połączeniem, aby uniknąć starych śmieci
+   
     incomingData.clear();
 
     connect(clientConnection, &QTcpSocket::readyRead, this, &NetworkReceiver::onReadyRead);
     connect(clientConnection, &QTcpSocket::disconnected, this, &NetworkReceiver::onClientDisconnected);
 
-    // Opcjonalnie: obsługa błędów gniazda
+    
     connect(clientConnection, &QTcpSocket::errorOccurred, this, [this, clientConnection](QAbstractSocket::SocketError){
         emit errorOccurred("Błąd połączenia: " + clientConnection->errorString());
     });
@@ -51,7 +51,7 @@ void NetworkReceiver::onReadyRead()
 {
     QTcpSocket *clientConnection = qobject_cast<QTcpSocket *>(sender());
     if (clientConnection) {
-        // Dopisywanie kolejnych paczek danych do bufora
+        
         incomingData.append(clientConnection->readAll());
     }
 }
@@ -61,7 +61,7 @@ void NetworkReceiver::onClientDisconnected()
     QTcpSocket *clientConnection = qobject_cast<QTcpSocket *>(sender());
     if (!clientConnection) return;
 
-    // Przetwarzamy dane tylko jeśli cokolwiek odebrano
+    
     if (!incomingData.isEmpty()) {
         QJsonParseError parseError;
         QJsonDocument doc = QJsonDocument::fromJson(incomingData, &parseError);
@@ -71,11 +71,11 @@ void NetworkReceiver::onClientDisconnected()
                 emit configurationReceived(doc);
             }
         } else {
-            // To zapobiega crashowi - zamiast wywalić program, wypisze błąd w konsoli
+            
             emit errorOccurred("Błąd struktury JSON: " + parseError.errorString());
         }
     }
 
-    incomingData.clear(); // Kluczowe: czyszczenie po przetworzeniu
+    incomingData.clear();
     clientConnection->deleteLater();
 }
