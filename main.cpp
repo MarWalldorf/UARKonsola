@@ -5,11 +5,10 @@
 #include "NetworkSender.h"
 #include "NetworkReceiver.h"
 
-// Funkcja uruchamiająca tryb nadawcy (Klient)
 void runSender(MenagerSymulacji &manager, const QString &ip, quint16 port) {
     QTextStream qout(stdout);
 
-    // Generujemy przykładowe dane do wysłania
+
     manager.SetKp(1.75);
     manager.SetTi(2.50);
     manager.SetTd(0.35);
@@ -28,9 +27,7 @@ void runSender(MenagerSymulacji &manager, const QString &ip, quint16 port) {
     // POPRAWKA: Usunięto &qout z listy przechwytywania. Tworzymy lokalny strumień wewnątrz.
     QObject::connect(sender, &NetworkSender::dataSent, []() {
         QTextStream localOut(stdout);
-        localOut << "\n[=========================================]\n";
         localOut << "[SUKCES] Konfiguracja zostala pomyslnie wyslana!\n";
-        localOut << "[=========================================]\n";
         localOut << "Dane dotarly do odbiorcy. Mozesz zamknac program.\n";
         localOut.flush();
     });
@@ -38,10 +35,8 @@ void runSender(MenagerSymulacji &manager, const QString &ip, quint16 port) {
     // POPRAWKA: Usunięto &qout.
     QObject::connect(sender, &NetworkSender::errorOccurred, [](const QString &err) {
         QTextStream localOut(stdout);
-        localOut << "\n[=========================================]\n";
         localOut << "[BLAD SIECI] Problem z wyslaniem: " << err << "\n";
         localOut << "Upewnij sie, ze Odbiorca (Serwer) jest uruchomiony i IP jest poprawne.\n";
-        localOut << "[=========================================]\n";
         localOut.flush();
     });
 
@@ -57,13 +52,11 @@ void runReceiver(MenagerSymulacji &manager, quint16 port) {
     // POPRAWKA: Usunięto &qout. Przechwytujemy tylko &manager.
     QObject::connect(receiver, &NetworkReceiver::configurationReceived, [&manager](const QJsonDocument &doc) {
         QTextStream localOut(stdout);
-        localOut << "\n[=========================================]\n";
         localOut << "[SUKCES] Odebrano nowa konfiguracje z sieci!\n";
-        localOut << "[=========================================]\n";
 
         manager.deserialize(doc);
 
-        localOut << "--- Zaktualizowane parametry --- \n";
+        localOut << "Zaktualizowane parametry \n";
         localOut << "Regulator PID:\n";
         localOut << "  Kp: " << manager.getKp() << "\n";
         localOut << "  Ti: " << manager.getTi() << "\n";
@@ -102,15 +95,12 @@ int main(int argc, char *argv[])
     FeedbackLoop loop(ARX_Model(std::vector<double>(), std::vector<double>()), Regulator_PID(0,0,0,0), Generator());
     MenagerSymulacji manager(loop, nullptr);
 
-    // =====================================================================
-    // USTAW ZMIENNE PONIŻEJ, ABY ZDECYDOWAĆ, CO ROBI TEN KOMPUTER:
-    // =====================================================================
 
     bool uruchomJakoOdbiorca = false;
     quint16 port = 12345;
     QString ipOdbiorcy = "192.168.1.21";
 
-    // =====================================================================
+
 
     qout << "=== Aplikacja Sieciowa ARX & PID ===\n";
 
