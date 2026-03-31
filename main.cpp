@@ -102,14 +102,14 @@ int main(int argc, char *argv[])
 
 
 
-    qout << "=== Aplikacja Sieciowa ARX & PID ===\n";
+    qout << "Aplikacja Sieciowa ARX & PID\n";
 
     if (uruchomJakoOdbiorca) {
-        qout << ">>> TRYB: ODBIORCA (Serwer) <<<\n";
+        qout << "TRYB: ODBIORCA (Serwer) <<<\n";
         qout.flush();
         runReceiver(manager, port);
     } else {
-        qout << ">>> TRYB: NADAWCA (Klient) <<<\n";
+        qout << "TRYB: NADAWCA (Klient) <<<\n";
         qout.flush();
         runSender(manager, ipOdbiorcy, port);
     }
