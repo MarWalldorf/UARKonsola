@@ -24,7 +24,6 @@ void runSender(MenagerSymulacji &manager, const QString &ip, quint16 port) {
 
     NetworkSender *sender = new NetworkSender();
 
-    // POPRAWKA: Usunięto &qout z listy przechwytywania. Tworzymy lokalny strumień wewnątrz.
     QObject::connect(sender, &NetworkSender::dataSent, []() {
         QTextStream localOut(stdout);
         localOut << "[SUKCES] Konfiguracja zostala pomyslnie wyslana!\n";
@@ -32,7 +31,6 @@ void runSender(MenagerSymulacji &manager, const QString &ip, quint16 port) {
         localOut.flush();
     });
 
-    // POPRAWKA: Usunięto &qout.
     QObject::connect(sender, &NetworkSender::errorOccurred, [](const QString &err) {
         QTextStream localOut(stdout);
         localOut << "[BLAD SIECI] Problem z wyslaniem: " << err << "\n";
@@ -43,13 +41,11 @@ void runSender(MenagerSymulacji &manager, const QString &ip, quint16 port) {
     sender->sendConfiguration(ip, port, doc);
 }
 
-// Funkcja uruchamiająca tryb odbiorcy (Serwer)
 void runReceiver(MenagerSymulacji &manager, quint16 port) {
     QTextStream qout(stdout);
 
     NetworkReceiver *receiver = new NetworkReceiver();
 
-    // POPRAWKA: Usunięto &qout. Przechwytujemy tylko &manager.
     QObject::connect(receiver, &NetworkReceiver::configurationReceived, [&manager](const QJsonDocument &doc) {
         QTextStream localOut(stdout);
         localOut << "[SUKCES] Odebrano nowa konfiguracje z sieci!\n";
@@ -70,7 +66,6 @@ void runReceiver(MenagerSymulacji &manager, quint16 port) {
         localOut.flush();
     });
 
-    // POPRAWKA: Usunięto &qout.
     QObject::connect(receiver, &NetworkReceiver::errorOccurred, [](const QString &err) {
         QTextStream localOut(stdout);
         localOut << "\n[BLAD ODBIORCY] " << err << "\n";
